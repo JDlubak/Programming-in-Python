@@ -1,14 +1,13 @@
-from Creature import Creature
 from Sheep import Sheep
-import ui
 
 
-class Wolf(Creature):
+class Wolf:
     def __init__(self,
                  x_pos: float,
                  y_pos: float,
                  wolf_range: float) -> None:
-        super().__init__(x_pos, y_pos)
+        self.x_pos = x_pos
+        self.y_pos = y_pos
         self.wolf_range = wolf_range
 
     def play_wolf_turn(self, sheep_list: list[Sheep]) -> dict[str, int]:

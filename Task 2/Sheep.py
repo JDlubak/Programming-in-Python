@@ -1,15 +1,15 @@
 import random
-from Creature import Creature
 
 
-class Sheep(Creature):
+class Sheep:
     def __init__(self,
                  x_pos: float,
                  y_pos: float,
                  sheep_id: int,
                  step_size: float,
                  is_alive: bool = True) -> None:
-        super().__init__(x_pos, y_pos)
+        self.x_pos = x_pos
+        self.y_pos = y_pos
         self.sheep_id = sheep_id
         self.is_alive = is_alive
         self.step_size = step_size
