@@ -16,12 +16,11 @@ def print_round_result(r: int,
                        wolf_y_pos: float,
                        sheep_counter: int,
                        wolf_action: dict[str, int]) -> None:
-    print(f'Round: {r}')
+    action = "Eaten" if wolf_action["action"] == "eat" else "Chased"
+    print(f'Round {r} outcome')
     print(f'Wolf position: {wolf_x_pos:.3f}, {wolf_y_pos:.3f}')
     print(f'Alive sheep: {sheep_counter}')
-    print("Eaten" if wolf_action["action"] == "eat" else "Chased",
-          end='')
-    print(f' sheep id: {wolf_action["sheep_id"]}')
+    print(f'{action} sheep id: {wolf_action["sheep_id"]}')
 
 
 def print1():

@@ -1,6 +1,7 @@
 *.zip
 *.txt
 *.csv
+*.json
 .idea
 
 
