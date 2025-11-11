@@ -13,7 +13,6 @@ def print_round_result(r: int,
 
 def print_simulation_end(last_round: int, max_rounds: int,
                          sheep_counter: int) -> None:
-    print(last_round)
     verb = "has" if sheep_counter == 1 else "have"
     if last_round >= max_rounds:
         print(f'Simulation ended - {sheep_counter} '

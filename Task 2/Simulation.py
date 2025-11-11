@@ -1,5 +1,6 @@
+import msvcrt
+
 from Wolf import Wolf
-from plot import graph_simulation
 from ui import print_round_result, print_simulation_end
 from file import *
 import random
@@ -8,17 +9,17 @@ import random
 class Simulation(object):
     def __init__(self,
                  max_round: int,
-                 current_round: int,
                  sheep_amount: int,
                  meadow_range: float,
                  sheep_step_size: float,
-                 wolf_attack_range: float) -> None:
+                 wolf_attack_range: float,
+                 wait_after_round: bool) -> None:
         self.max_round = max_round
-        self.current_round = current_round
         self.sheep_amount = sheep_amount
         self.meadow_range = meadow_range
         self.sheep_step_size = sheep_step_size
         self.wolf_attack_range = wolf_attack_range
+        self.wait_after_round = wait_after_round
 
     def play_simulation(self) -> None:
         rounds_list = []
@@ -32,6 +33,9 @@ class Simulation(object):
             if wolf_action is not None:
                 print_round_result(r, wolf.x_pos, wolf.y_pos,
                                    sheep_count, wolf_action)
+                if (self.wait_after_round
+                        and sheep_count > 0 and r != self.max_round):
+                    msvcrt.getch()
             else:
                 break
             rounds_list = get_round_info(r, wolf.x_pos, wolf.y_pos,
