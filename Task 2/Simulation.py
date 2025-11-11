@@ -1,9 +1,9 @@
+import random
 import msvcrt
-
+from Sheep import Sheep
 from Wolf import Wolf
 from ui import print_round_result, print_simulation_end
-from file import *
-import random
+from file import get_round_info, save_round_to_csv, save_round_to_json
 
 
 class Simulation(object):
@@ -33,9 +33,6 @@ class Simulation(object):
             if wolf_action is not None:
                 print_round_result(r, wolf.x_pos, wolf.y_pos,
                                    sheep_count, wolf_action)
-                if (self.wait_after_round
-                        and sheep_count > 0 and r != self.max_round):
-                    msvcrt.getch()
             else:
                 break
             rounds_list = get_round_info(r, wolf.x_pos, wolf.y_pos,
@@ -43,6 +40,9 @@ class Simulation(object):
             save_round_to_json(rounds_list)
             alive_list.append((r, sheep_count))
             save_round_to_csv(alive_list)
+            if (self.wait_after_round
+                    and r != self.max_round and sheep_count > 0):
+                msvcrt.getch()
         print_simulation_end(last_round, self.max_round, sheep_count)
 
     def create_creatures(self) -> tuple[list[Sheep], Wolf]:

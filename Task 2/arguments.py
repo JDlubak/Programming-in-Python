@@ -3,7 +3,7 @@ import configparser
 import os
 
 
-def parse_arguments():
+def get_arguments() -> tuple[str | None, int, int, bool]:
     parser = argparse.ArgumentParser(description='Simulation')
     parser.add_argument(
         '-c', '--config',
@@ -47,7 +47,7 @@ def parse_arguments():
     return args.config, int(args.rounds), int(args.sheep), args.wait
 
 
-def validate_number_values(value, name):
+def validate_number_values(value: str, name: str) -> None:
     try:
         val = float(value)
     except ValueError:
@@ -59,7 +59,8 @@ def validate_number_values(value, name):
                          f'{value} is lower than or equal to 0')
 
 
-def parse_config(config_file):
+def get_arguments_from_config(config_file: str) \
+        -> tuple[float, float, float]:
     config = configparser.ConfigParser()
     if not os.path.exists(config_file):
         raise FileNotFoundError(f"File {config_file} does not exist")
@@ -74,7 +75,8 @@ def parse_config(config_file):
     return meadow_range, sheep_step_size, wolf_attack_range
 
 
-def get_values_from_config(config):
+def get_values_from_config(config: configparser.ConfigParser) \
+        -> tuple[float, float, float]:
     sections = config.sections()
     if sorted(sections) != ['Sheep', 'Wolf']:
         raise ValueError('Invalid config file: '
@@ -89,7 +91,8 @@ def get_values_from_config(config):
     return meadow_range, sheep_step_size, wolf_attack_range
 
 
-def validate_config_value(config, section, key):
+def validate_config_value(config: configparser.ConfigParser,
+                          section: str, key: str) -> float:
     try:
         value = config.getfloat(section, key)
     except Exception:
