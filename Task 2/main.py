@@ -1,4 +1,4 @@
-from Simulation import *
+from Simulation import Simulation
 
 
 s = Simulation(max_round=50,
