@@ -1,9 +1,9 @@
 import argparse
 import configparser
 import os
+from logger import log_event
 
-
-def get_arguments() -> tuple[str | None, int, int, bool]:
+def get_arguments() -> tuple[str | None, int, int, str | None, bool]:
     parser = argparse.ArgumentParser(description='Simulation')
     parser.add_argument(
         '-c', '--config',
@@ -44,7 +44,8 @@ def get_arguments() -> tuple[str | None, int, int, bool]:
         if args.log.lower() not in ['debug', 'info', 'warning',
                                     'error', 'critical']:
             raise ValueError(f'Invalid log level: {args.log}')
-    return args.config, int(args.rounds), int(args.sheep), args.wait
+    return (args.config, int(args.rounds), int(args.sheep),
+            args.log, args.wait)
 
 
 def validate_number_values(value: str, name: str) -> None:
@@ -72,6 +73,11 @@ def get_arguments_from_config(config_file: str) \
         raise ValueError(f"Error while parsing {config_file}")
     (meadow_range, sheep_step_size,
      wolf_attack_range) = get_values_from_config(config)
+    log_event(10,
+              f'Loaded values from {config_file}: '
+              f'Meadow range: {meadow_range}, '
+              f'Sheep step size: {sheep_step_size}, '
+              f'Wolf attack range: {wolf_attack_range}')
     return meadow_range, sheep_step_size, wolf_attack_range
 
 

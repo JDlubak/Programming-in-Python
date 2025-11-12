@@ -1,5 +1,8 @@
 import json
 import csv
+import os
+
+from logger import log_event
 
 from Sheep import Sheep
 
@@ -21,16 +24,15 @@ def get_round_info(round_number: int,
     return rounds_list
 
 
-def save_round_to_json(rounds_list: list[dict]) -> bool:
+def save_round_to_json(rounds_list: list[dict]) -> None:
     try:
         json_string = json.dumps(rounds_list)
         json_string = format_json_str(json_string, indent=4)
         with open('pos.json', 'w', encoding='utf-8') as file:
             file.write(json_string)
-        return True
+            log_event(10, "Saved to pos.json")
     except Exception as e:
-        print(e)
-        return False
+        log_event(40, f'Unable to save to pos.json: {e}')
 
 
 def format_json_str(string: str, indent: int) -> str:
@@ -71,13 +73,13 @@ def format_json_str(string: str, indent: int) -> str:
     return string
 
 
-def save_round_to_csv(alive_list: list[tuple]) -> bool:
+def save_round_to_csv(alive_list: list[tuple]) -> None:
     try:
         with open('alive.csv', 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(["Round", "Alive number"])
             writer.writerows(alive_list)
-            return True
+            log_event(10, "Saved to alive.csv")
     except Exception as e:
-        print(e)
-        return False
+        log_event(40, f'Unable to save to alive.csv: {e}')
+

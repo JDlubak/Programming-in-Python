@@ -1,4 +1,5 @@
 import random
+from logger import log_event
 
 
 class Sheep:
@@ -17,6 +18,8 @@ class Sheep:
     def play_sheep_turn(self, meadow_range: float) -> None:
         available_directions = ["UP", "DOWN", "LEFT", "RIGHT"]
         chosen_direction = random.choice(available_directions)
+        log_event(10, f'Sheep {self.sheep_id} '
+                      f'chose direction: {chosen_direction}')
         self.move(chosen_direction, meadow_range)
 
     def move(self, direction: str, meadow_range: float) -> None:
@@ -29,8 +32,12 @@ class Sheep:
         dx, dy = moves[direction]
         self.x_pos += dx
         self.y_pos += dy
-        self.x_pos = max(-meadow_range, min(self.x_pos, meadow_range))
-        self.y_pos = max(-meadow_range, min(self.y_pos, meadow_range))
+        new_x = max(-meadow_range, min(self.x_pos, meadow_range))
+        new_y = max(-meadow_range, min(self.y_pos, meadow_range))
+        if new_x != self.x_pos or new_y != self.y_pos:
+            self.x_pos, self.y_pos = new_x, new_y
+            log_event(30, f'Sheep {self.sheep_id} wanted '
+                          f'to escape from meadow')
 
-    def __repr__(self) -> str:
-        return f"Sheep {self.sheep_id}, {self.x_pos}, {self.y_pos}"
+        log_event(10, f'Sheep {self.sheep_id} moved to: '
+                      f'{self.x_pos}, {self.y_pos}')
