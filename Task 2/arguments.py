@@ -1,7 +1,7 @@
 import argparse
 import configparser
 import os
-from logger import log_event
+from logger import log_event, setup_logger
 
 def get_arguments() -> tuple[str | None, int, int, str | None, bool]:
     parser = argparse.ArgumentParser(description='Simulation')
@@ -39,9 +39,10 @@ def get_arguments() -> tuple[str | None, int, int, str | None, bool]:
         help="Pause simulation after every round until a key is pressed"
     )
     args = parser.parse_args()
-    sheep = validate_number_values(args.sheep, "Sheep amount")
-    rounds = validate_number_values(args.rounds, "Round amount")
-    return args.config, rounds, sheep, args.log, args.wait
+    setup_logger(args.log)
+    sheep = validate_number_values(args.sheep, "Sheep amount", 15)
+    rounds = validate_number_values(args.rounds, "Round amount", 50)
+    return args.config, rounds, sheep, args.wait
 
 
 def validate_number_values(value: str, name: str, default: int) -> int:
