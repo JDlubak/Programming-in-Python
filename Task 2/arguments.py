@@ -39,22 +39,32 @@ def get_arguments() -> tuple[str | None, int, int, str | None, bool]:
         help="Pause simulation after every round until a key is pressed"
     )
     args = parser.parse_args()
-    validate_number_values(args.sheep, "Sheep amount")
-    validate_number_values(args.rounds, "Round amount")
-    return (args.config, int(args.rounds), int(args.sheep),
-            args.log, args.wait)
+    sheep = validate_number_values(args.sheep, "Sheep amount")
+    rounds = validate_number_values(args.rounds, "Round amount")
+    return args.config, rounds, sheep, args.log, args.wait
 
 
-def validate_number_values(value: str, name: str) -> None:
+def validate_number_values(value: str, name: str, default: int) -> int:
+    error_has_occurred = False
     try:
         val = float(value)
     except ValueError:
-        raise ValueError(f'Error in {name}: {value} is not a number')
-    if not val.is_integer():
-        raise ValueError(f'Error in {name}: {value} is not an integer')
-    if val <= 0:
-        raise ValueError(f'Error in {name}: '
-                         f'{value} is lower than or equal to 0')
+        error_has_occurred = True
+        log_event(40, f'Error in {name}: '
+                      f'{value} is not a number!')
+        val = None
+    if val is not None and not val.is_integer():
+        error_has_occurred = True
+        log_event(40, f'Error in {name}: '
+                      f'{value} is not an integer!')
+    if val is not None and val <= 0:
+        error_has_occurred = True
+        log_event(40, f'Error in {name}: '
+                  f'{value} is not a positive number!')
+    if error_has_occurred:
+        log_event(20, f'Using default ({default}) for {name}.')
+        return default
+    return int(val)
 
 
 def get_arguments_from_config(config_file: str) \
