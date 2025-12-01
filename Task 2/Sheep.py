@@ -35,9 +35,12 @@ class Sheep:
         new_x = max(-meadow_range, min(self.x_pos, meadow_range))
         new_y = max(-meadow_range, min(self.y_pos, meadow_range))
         if new_x != self.x_pos or new_y != self.y_pos:
-            self.x_pos, self.y_pos = new_x, new_y
             log_event(30, f'Sheep {self.sheep_id} wanted '
-                          f'to escape from meadow')
+                          f'to escape from meadow, position '
+                          f'({self.x_pos}, {self.y_pos}) has been '
+                          f'corrected to ({new_x}, {new_y})')
+            self.x_pos, self.y_pos = new_x, new_y
+
 
         log_event(10, f'Sheep {self.sheep_id} moved to: '
-                      f'{self.x_pos}, {self.y_pos}')
+                      f'({self.x_pos}, {self.y_pos})')

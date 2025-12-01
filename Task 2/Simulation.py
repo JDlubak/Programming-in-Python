@@ -65,7 +65,7 @@ class Simulation(object):
                           step_size=self.sheep_step_size)
             log_event(10, f'Sheep {sheep.sheep_id} '
                           f'position initialized: '
-                          f'{sheep.x_pos}, {sheep.y_pos}')
+                          f'({sheep.x_pos}, {sheep.y_pos})')
             sheep_list.append(sheep)
         log_event(20, "Initial positions of all sheep "
                       "were determined")

@@ -17,6 +17,7 @@ def get_arguments() -> tuple[str | None, int, int, str | None, bool]:
         type=str,
         action='store',
         metavar='LEVEL',
+        choices=['debug', 'info', 'warning', 'error', 'critical'],
         help=('Logging events over chosen LEVEL to a chase.log file. \n'
               'Available levels: debug, info, warning, error, critical')
     )
@@ -40,10 +41,6 @@ def get_arguments() -> tuple[str | None, int, int, str | None, bool]:
     args = parser.parse_args()
     validate_number_values(args.sheep, "Sheep amount")
     validate_number_values(args.rounds, "Round amount")
-    if args.log is not None:
-        if args.log.lower() not in ['debug', 'info', 'warning',
-                                    'error', 'critical']:
-            raise ValueError(f'Invalid log level: {args.log}')
     return (args.config, int(args.rounds), int(args.sheep),
             args.log, args.wait)
 
@@ -63,18 +60,40 @@ def validate_number_values(value: str, name: str) -> None:
 def get_arguments_from_config(config_file: str) \
         -> tuple[float, float, float]:
     config = configparser.ConfigParser()
+    error_has_occurred = False
     if not os.path.exists(config_file):
-        raise FileNotFoundError(f"File {config_file} does not exist")
-    if not config_file.endswith(".ini"):
-        raise ValueError(f"File {config_file} is not a .ini file")
-    try:
-        config.read(config_file)
-    except configparser.Error:
-        raise ValueError(f"Error while parsing {config_file}")
-    (meadow_range, sheep_step_size,
-     wolf_attack_range) = get_values_from_config(config)
+        log_event(40,f'File {config_file} does not exist! '
+                     f'- we will be using default values.')
+        error_has_occurred = True
+    elif not config_file.endswith(".ini"):
+        log_event(40, f'File {config_file} '
+                      f'is not a .ini file')
+        error_has_occurred = True
+    if not error_has_occurred:
+        try:
+            config.read(config_file)
+        except configparser.Error:
+            log_event(40, f'Error while parsing {config_file}!')
+            error_has_occurred = True
+
+    DEFAULT = (10.0, 0.5, 1.0)
+
+    if not error_has_occurred:
+        error_flag, meadow_range, sheep_step_size, wolf_attack_range = \
+            get_values_from_config(config)
+        if error_flag:
+            error_has_occurred = True
+    else:
+        meadow_range, sheep_step_size, wolf_attack_range = DEFAULT
+
+    if error_has_occurred:
+        message_start = (
+            "Since error has occurred, we will be using default values: "
+        )
+    else:
+        message_start = f"Loaded values from {config_file}: "
     log_event(10,
-              f'Loaded values from {config_file}: '
+              f'{message_start}'
               f'Meadow range: {meadow_range}, '
               f'Sheep step size: {sheep_step_size}, '
               f'Wolf attack range: {wolf_attack_range}')
@@ -82,29 +101,36 @@ def get_arguments_from_config(config_file: str) \
 
 
 def get_values_from_config(config: configparser.ConfigParser) \
-        -> tuple[float, float, float]:
+        -> tuple[bool, float, float, float]:
     sections = config.sections()
     if sorted(sections) != ['Sheep', 'Wolf']:
-        raise ValueError('Invalid config file: '
-                         'it must contain [Sheep] and [Wolf] sections')
-    meadow_range = validate_config_value(
-        config, 'Sheep', 'InitPosLimit')
-    sheep_step_size = validate_config_value(
-        config, 'Sheep', 'MoveDist')
-    wolf_attack_range = validate_config_value(
-        config, 'Wolf', 'MoveDist')
+        log_event(40, "Invalid config file: it must "
+                      "contain [Sheep] and [Wolf] sections")
+        return True, 10.0, 0.5, 1.0
 
-    return meadow_range, sheep_step_size, wolf_attack_range
+    def get_value(section: str, key: str, default: float) -> float:
+        error, value = validate_config_value(config, section, key)
+        if error:
+            log_event(20, f'Default {key} value '
+                          f'({default}) has been used.')
+            return default
+        return value
+    meadow_range = get_value('Sheep', 'InitPosLimit', 10.0)
+    sheep_step_size = get_value('Sheep', 'MoveDist', 0.5)
+    wolf_attack_range = get_value('Wolf', 'MoveDist', 1.0)
+    return False, meadow_range, sheep_step_size, wolf_attack_range
 
 
 def validate_config_value(config: configparser.ConfigParser,
-                          section: str, key: str) -> float:
+                          section: str, key: str) -> tuple[bool, float]:
     try:
         value = config.getfloat(section, key)
     except Exception:
-        raise ValueError(f'Error in {section} section: '
+        log_event(40, f'Error in {section} section: '
                          f'{key} is invalid')
+        return True, None
     if value <= 0.0:
-        raise ValueError(f'Error in {section} section: '
-                         f'{key} = {value} is lower than or equal to 0')
-    return value
+        log_event(40, f'Error in {section} section: '
+                  f'{key} = {value} is lower than or equal to 0')
+        return True, None
+    return False, value

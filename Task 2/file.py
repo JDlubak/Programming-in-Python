@@ -1,6 +1,5 @@
 import json
 import csv
-import os
 
 from logger import log_event
 
