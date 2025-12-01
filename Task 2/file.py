@@ -1,16 +1,14 @@
 import json
 import csv
-
 from logger import log_event
-
 from Sheep import Sheep
 
 
 def get_round_info(round_number: int,
-                         wolf_x_pos: float,
-                         wolf_y_pos: float,
-                         sheep_list: list[Sheep],
-                         rounds_list: list[dict]) -> list[dict]:
+                   wolf_x_pos: float,
+                   wolf_y_pos: float,
+                   sheep_list: list[Sheep],
+                   rounds_list: list[dict]) -> list[dict]:
     sheep_pos = [(sheep.x_pos, sheep.y_pos) for sheep in sheep_list]
 
     new_round = {
@@ -81,4 +79,3 @@ def save_round_to_csv(alive_list: list[tuple]) -> None:
             log_event(10, "Saved to alive.csv")
     except Exception as e:
         log_event(40, f'Unable to save to alive.csv: {e}')
-

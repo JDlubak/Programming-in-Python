@@ -41,6 +41,5 @@ class Sheep:
                           f'corrected to ({new_x}, {new_y})')
             self.x_pos, self.y_pos = new_x, new_y
 
-
         log_event(10, f'Sheep {self.sheep_id} moved to: '
                       f'({self.x_pos}, {self.y_pos})')

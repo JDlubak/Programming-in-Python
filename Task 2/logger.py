@@ -1,11 +1,11 @@
 import logging
 
 
-def log_event(level, message):
+def log_event(level: int, message: str) -> None:
     logging.log(level, message)
 
 
-def setup_logger(log_level: str | None):
+def setup_logger(log_level: str | None) -> None:
     if log_level is not None:
         log_level = log_level.upper()
         level = getattr(logging, log_level)

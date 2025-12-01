@@ -3,6 +3,7 @@ from arguments import get_arguments, get_arguments_from_config
 from logger import log_event
 import os
 
+
 def main():
     try:
         (config_file, rounds_amount,

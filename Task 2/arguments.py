@@ -3,7 +3,8 @@ import configparser
 import os
 from logger import log_event, setup_logger
 
-def get_arguments() -> tuple[str | None, int, int, str | None, bool]:
+
+def get_arguments() -> tuple[str | None, int, int, bool]:
     parser = argparse.ArgumentParser(description='Simulation')
     parser.add_argument(
         '-c', '--config',
@@ -61,7 +62,7 @@ def validate_number_values(value: str, name: str, default: int) -> int:
     if val is not None and val <= 0:
         error_has_occurred = True
         log_event(40, f'Error in {name}: '
-                  f'{value} is not a positive number!')
+                      f'{value} is not a positive number!')
     if error_has_occurred:
         log_event(20, f'Using default ({default}) for {name}.')
         return default
@@ -73,8 +74,8 @@ def get_arguments_from_config(config_file: str) \
     config = configparser.ConfigParser()
     error_has_occurred = False
     if not os.path.exists(config_file):
-        log_event(40,f'File {config_file} does not exist! '
-                     f'- we will be using default values.')
+        log_event(40, f'File {config_file} does not exist! '
+                      f'- we will be using default values.')
         error_has_occurred = True
     elif not config_file.endswith(".ini"):
         log_event(40, f'File {config_file} '
@@ -126,6 +127,7 @@ def get_values_from_config(config: configparser.ConfigParser) \
                           f'({default}) has been used.')
             return default
         return value
+
     meadow_range = get_value('Sheep', 'InitPosLimit', 10.0)
     sheep_step_size = get_value('Sheep', 'MoveDist', 0.5)
     wolf_attack_range = get_value('Wolf', 'MoveDist', 1.0)
@@ -138,10 +140,10 @@ def validate_config_value(config: configparser.ConfigParser,
         value = config.getfloat(section, key)
     except Exception:
         log_event(40, f'Error in {section} section: '
-                         f'{key} is invalid')
+                      f'{key} is invalid')
         return True, None
     if value <= 0.0:
         log_event(40, f'Error in {section} section: '
-                  f'{key} = {value} is lower than or equal to 0')
+                      f'{key} = {value} is lower than or equal to 0')
         return True, None
     return False, value
