@@ -1,5 +1,6 @@
 import json
 import csv
+
 from logger import log_event
 from Sheep import Sheep
 
@@ -33,19 +34,6 @@ def save_round_to_json(rounds_list: list[dict]) -> None:
 
 
 def format_json_str(string: str, indent: int) -> str:
-    """
-    Format a compact JSON string to improve readability.
-
-    This function reformats a one-line JSON string,
-    adding newlines and indentation for dictionaries and lists.
-
-    Args:
-        string (str): The one-line string to format.
-        indent (int): The number of spaces per indentation level.
-
-    Returns:
-        str: The formatted JSON string, ready to be saved to a file.
-    """
     dict_indent = 1 * indent * " "
     key_indent = 2 * indent * " "
     end_sheep_list_indent = 3 * indent * " "

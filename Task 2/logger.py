@@ -13,7 +13,7 @@ def setup_logger(log_level: str | None) -> None:
     else:
         level = 100     # Level above every other one, which means
         filemode = 'a'  # that nothing will get logged
-                        # and file will not be overwritten
+        # and file will not be overwritten
     logging.basicConfig(
         filename='chase.log',
         level=level,

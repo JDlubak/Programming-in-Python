@@ -73,8 +73,8 @@ class Simulation(object):
                     wolf_range=self.wolf_attack_range)
         return sheep_list, wolf
 
-    def play_round(self, sheep_list: list[Sheep], wolf: Wolf) -> tuple[
-        dict[str, int], int]:
+    def play_round(self, sheep_list: list[Sheep], wolf: Wolf) \
+            -> tuple[dict[str, int], int]:
         sheep_count = 0
         for sheep in sheep_list:
             if sheep.is_alive:

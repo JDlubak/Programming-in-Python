@@ -1,7 +1,8 @@
-from Simulation import Simulation
+import os
+
 from arguments import get_arguments, get_arguments_from_config
 from logger import log_event
-import os
+from Simulation import Simulation
 
 
 def main():

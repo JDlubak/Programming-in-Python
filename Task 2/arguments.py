@@ -1,6 +1,7 @@
 import argparse
 import configparser
 import os
+
 from logger import log_event, setup_logger
 
 
@@ -54,15 +55,14 @@ def validate_number_values(value: str, name: str, default: int) -> int:
         error_has_occurred = True
         log_event(40, f'Error in {name}: '
                       f'{value} is not a number!')
-        val = None
-    if val is not None and not val.is_integer():
+    else:
         error_has_occurred = True
-        log_event(40, f'Error in {name}: '
-                      f'{value} is not an integer!')
-    if val is not None and val <= 0:
-        error_has_occurred = True
-        log_event(40, f'Error in {name}: '
-                      f'{value} is not a positive number!')
+        if val.is_integer():
+            log_event(40, f'Error in {name}: '
+                          f'{value} is not an integer!')
+        elif val <= 0:
+            log_event(40, f'Error in {name}: '
+                          f'{value} is not a positive number!')
     if error_has_occurred:
         log_event(20, f'Using default ({default}) for {name}.')
         return default
@@ -100,7 +100,8 @@ def get_arguments_from_config(config_file: str) \
 
     if error_has_occurred:
         message_start = (
-            "Since error has occurred, we will be using default values: "
+            "Since error has occurred, "
+            "we will be using default values: "
         )
     else:
         message_start = f"Loaded values from {config_file}: "
