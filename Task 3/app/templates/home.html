@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>All Data Points</title>
+</head>
+<body>
+    <h1>All Data Points</h1>
+
+    <p><a href="{{ url_for('web.add') }}">Add New Data Point</a></p>
+
+    <table border="1" cellpadding="5" cellspacing="0">
+        <thead>
+            <tr>
+                <th>#</th>
+                <th>Width</th>
+                <th>Height</th>
+                <th>Length</th>
+                <th>Weight</th>
+                <th>Category</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in data_points %}
+            <tr>
+                <td>{{ loop.index }}</td>
+                <td>{{ d.width }}</td>
+                <td>{{ d.height }}</td>
+                <td>{{ d.length }}</td>
+                <td>{{ d.weight }}</td>
+                <td>{{ d.category }}</td>
+                <td>
+                    <form method="POST" action="{{ url_for('web.delete', point_id=d.id) }}" style="display:inline;">
+                        <button type="submit">Delete</button>
+                    </form>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>

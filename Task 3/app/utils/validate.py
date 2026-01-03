@@ -47,22 +47,20 @@ def get_field_value_error(value: Any,
                           field_name: str) -> str:
     if value is None:
         return f'{field_name} is required'
-    if not isinstance(value, expected_type):
+    if isinstance(value, str) and value.strip() == "":
+        return f'{field_name} must not be empty'
+    try:
+        if expected_type == int:
+            value = int(value)
+        elif expected_type == float:
+            value = float(value)
+        elif expected_type == (int, float):
+            value = float(value)
+    except (ValueError, TypeError):
         type_names = " or ".join([t.__name__ for t in expected_type]) \
             if isinstance(expected_type, tuple) \
             else expected_type.__name__
-        return f'{field_name} must be of type {type_names}'
+        return f'{field_name} must be {type_names}'
     if value <= 0:
         return f'{field_name} must be greater than 0'
     return ""
-
-
-data = {
-    "category": 1,
-    "width": 10,
-    "height": 20,
-    "length": 'cj',
-    "weight": 5,
-}
-is_valid, result = validate_point(data)
-print(result)

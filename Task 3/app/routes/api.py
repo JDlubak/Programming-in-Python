@@ -1,15 +1,16 @@
-from flask import Blueprint, request, jsonify
 from http import HTTPStatus
+
+from flask import Blueprint, jsonify, request
 
 from app.db import session
 from app.models import Data
 from app.utils import validate_point
 
-data_bp = Blueprint('data', __name__, url_prefix='/api/data')
+api_bp = Blueprint('api', __name__, url_prefix='/api/data')
 
 
-@data_bp.route('', methods=['GET'])
-def get_data():
+@api_bp.route('', methods=['GET'])
+def get():
     with session() as s:
         data_points = s.query(Data).all()
     result = [
@@ -26,8 +27,8 @@ def get_data():
     return jsonify(result), HTTPStatus.OK
 
 
-@data_bp.route('', methods=['POST'])
-def post_data():
+@api_bp.route('', methods=['POST'])
+def post():
     is_valid, result = validate_point(request.get_json())
     if not is_valid:
         return {"error": result}, HTTPStatus.BAD_REQUEST
@@ -39,8 +40,8 @@ def post_data():
     return jsonify({"id": point_id}), HTTPStatus.CREATED
 
 
-@data_bp.route('/<int:point_id>', methods=['DELETE'])
-def data_delete(point_id):
+@api_bp.route('/<int:point_id>', methods=['DELETE'])
+def delete(point_id):
     with session() as s:
         point = s.query(Data).filter(Data.id == point_id).first()
         if not point:
