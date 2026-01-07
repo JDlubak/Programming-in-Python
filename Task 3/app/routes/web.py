@@ -5,7 +5,7 @@ from flask import (abort, Blueprint, redirect,
 
 from app.db import session
 from app.models import Data
-from app.utils import validate_point
+from app.utils import make_prediction, validate_point
 
 web_bp = Blueprint('web', __name__)
 
@@ -46,3 +46,29 @@ def delete(point_id):
         s.delete(point)
         s.commit()
     return redirect(url_for('web.home'))
+
+
+@web_bp.route('/predict', methods=['GET', 'POST'])
+def predict():
+    with session() as s:
+        data_points = s.query(Data).all()
+    if len(data_points) < 5:
+        abort(HTTPStatus.BAD_REQUEST,
+              description="Unable to make prediction; "
+                          "Please add more data points to database!"
+                          "<br>(At least 5 points required)")
+    if request.method == 'POST':
+        input_data = {
+            "width": request.form.get('width'),
+            "height": request.form.get('height'),
+            "length": request.form.get('length'),
+            "weight": request.form.get('weight')
+        }
+        valid, result = validate_point(input_data, is_prediction=True)
+        if not valid:
+            abort(HTTPStatus.NOT_FOUND, description=result)
+
+        prediction = make_prediction(data_points, result)
+        return render_template("prediction_result.html",
+                               prediction=prediction)
+    return render_template("predict.html")

@@ -5,13 +5,9 @@
     <title>Add</title>
 </head>
 <body>
-    <h1>Fill in the values below to add
-        a new data point to database.</h1>
-
-<form method="POST" action="{{ url_for('web.add') }}">
-    <label>Category:
-        <input name="category">
-    </label><br>
+    <h1>Fill in the values below to predict the category
+        of a potential data point.</h1>
+<form method="POST" action="{{ url_for('web.predict') }}">
     <label>Width:
         <input name="width">
     </label><br>
@@ -24,9 +20,8 @@
     <label>Weight:
         <input name="weight">
     </label><br>
-    <button type="submit">Add</button>
+    <button type="submit">Predict</button>
 </form>
-
     <p><a href="{{ url_for('web.home') }}">Return to Home</a></p>
 </body>
 </html>
