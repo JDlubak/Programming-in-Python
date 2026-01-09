@@ -5,7 +5,7 @@ from flask import (abort, Blueprint, redirect,
 
 from app.db import session
 from app.models import Data
-from app.utils import make_prediction, validate_point
+from app.utils import generate_points, make_prediction, validate_point
 
 web_bp = Blueprint('web', __name__)
 
@@ -13,7 +13,7 @@ web_bp = Blueprint('web', __name__)
 @web_bp.route('/')
 def home():
     with session() as s:
-        data_points = s.query(Data).all()
+        data_points = s.query(Data).order_by(Data.category).all()
     return render_template("home.html", data_points=data_points)
 
 
@@ -72,3 +72,15 @@ def predict():
         return render_template("prediction_result.html",
                                prediction=prediction)
     return render_template("predict.html")
+
+
+@web_bp.route('/init', methods=['GET', 'POST'])
+def init():
+    with session() as s:
+        if s.query(Data).count() > 0:
+            abort(HTTPStatus.CONFLICT, "Data points are already "
+                                       "present in database!")
+        data_points = generate_points()
+        s.add_all(data_points)
+        s.commit()
+    return redirect(url_for('web.home'))

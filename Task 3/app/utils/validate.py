@@ -7,7 +7,8 @@ FLOAT_VALS = ['width', 'height', 'length', 'weight']
 
 
 def validate_point(input_data: dict,
-                   is_prediction: bool = False) -> Tuple[bool, Any]:
+                   is_prediction: bool = False,
+                   for_api: bool = False) -> Tuple[bool, Any]:
     if not isinstance(input_data, dict):
         return False, "Invalid or missing JSON body."
 
@@ -26,8 +27,9 @@ def validate_point(input_data: dict,
     for key in AVAILABLE_KEYS:
         if key not in values and not is_prediction:
             errors.append(f"{key} is required")
-
     if errors:
+        if for_api:
+            return False, errors
         message_start = "An error occurred: " if len(errors) == 1 \
             else "Multiple errors occurred:<br>"
         return False, message_start + ",<br>".join(errors) + "."

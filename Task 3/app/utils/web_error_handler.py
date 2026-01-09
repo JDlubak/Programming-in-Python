@@ -23,6 +23,12 @@ def register_error_handlers(app):
         return (render_template("error.html",
                                 error=e, status=status), status)
 
+    @app.errorhandler(HTTPStatus.CONFLICT)
+    def method_not_allowed(e):
+        status = HTTPStatus.CONFLICT
+        return (render_template("error.html",
+                                error=e, status=status), status)
+
     @app.errorhandler(HTTPStatus.INTERNAL_SERVER_ERROR)
     def internal_error(e):
         status = HTTPStatus.INTERNAL_SERVER_ERROR
