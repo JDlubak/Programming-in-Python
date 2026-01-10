@@ -2,11 +2,14 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
     <title>Add</title>
 </head>
 <body>
-    <h1>Fill in the values below to add
-        a new data point to database.</h1>
+<h1>Add new data point</h1>
+<h2>Fill in the values below to add
+    a new data point to database.</h2>
 
 <form method="POST" action="{{ url_for('web.add') }}">
     <label>Category:
@@ -27,6 +30,6 @@
     <button type="submit">Add</button>
 </form>
 
-    <p><a href="{{ url_for('web.home') }}">Return to Home</a></p>
+<p><a href="{{ url_for('web.home') }}">Return to Home</a></p>
 </body>
 </html>

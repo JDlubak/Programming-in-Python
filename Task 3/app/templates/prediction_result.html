@@ -2,12 +2,18 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="stylesheet"
+          href="{{ url_for('static', filename='style.css') }}">
     <title>Prediction Result</title>
 </head>
 <body>
-    <h1>Prediction Result</h1>
-    <p>Predicted Category: {{ prediction }}</p>
+<h1>Prediction Result</h1>
+<p class="prediction">
+    Predicted Category: <span class="result">{{ prediction }}</span>
+</p>
+<div class="multi-action">
     <a href="{{ url_for('web.home') }}">Return to home</a>
     <a href="{{ url_for('web.predict') }}">Predict again</a>
+</div>
 </body>
 </html>
