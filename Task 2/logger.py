@@ -11,7 +11,7 @@ def setup_logger(log_level: str | None) -> None:
         level = getattr(logging, log_level)
         filemode = 'w'
     else:
-        level = 100     # Level above every other one, which means
+        level = 100  # Level above every other one, which means
         filemode = 'a'  # that nothing will get logged
         # and file will not be overwritten
     logging.basicConfig(

@@ -1,7 +1,8 @@
-import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
 import itertools
+
+import matplotlib.pyplot as plt
+import pandas as pd
+import seaborn as sns
 
 full_data = pd.read_csv("data.csv", header=None)
 category = full_data[0]

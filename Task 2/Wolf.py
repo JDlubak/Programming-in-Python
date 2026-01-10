@@ -1,5 +1,5 @@
-from Sheep import Sheep
 from logger import log_event
+from Sheep import Sheep
 
 
 class Wolf:

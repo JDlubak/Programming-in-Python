@@ -1,5 +1,5 @@
-import json
 import csv
+import json
 
 from logger import log_event
 from Sheep import Sheep

@@ -1,4 +1,5 @@
 import random
+
 from logger import log_event
 
 

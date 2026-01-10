@@ -1,10 +1,11 @@
-import random
 import msvcrt
-from Sheep import Sheep
-from Wolf import Wolf
-from ui import print_round_result, print_simulation_end
+import random
+
 from file import get_round_info, save_round_to_csv, save_round_to_json
 from logger import log_event
+from Sheep import Sheep
+from ui import print_round_result, print_simulation_end
+from Wolf import Wolf
 
 
 class Simulation(object):
