@@ -3,17 +3,17 @@ from http import HTTPStatus
 from flask import (abort, Blueprint, redirect,
                    render_template, request, url_for)
 
-from app.db import session
-from app.models import Data
-from app.utils import generate_points, make_prediction, validate_point
+from app.services import (count_points, create_point, delete_point,
+                          get_all, initialize_data)
+from app.utils import (generate_points, make_prediction,
+                       validate_point, validate_point_id)
 
 web_bp = Blueprint('web', __name__)
 
 
 @web_bp.route('/')
 def home():
-    with session() as s:
-        data_points = s.query(Data).order_by(Data.category).all()
+    data_points = get_all(order_by_category=True)
     return render_template("home.html", data_points=data_points)
 
 
@@ -29,30 +29,27 @@ def add():
         }
         valid, result = validate_point(input_data)
         if not valid:
-            abort(HTTPStatus.NOT_FOUND, description=result)
-        with session() as s:
-            s.add(result)
-            s.commit()
+            abort(HTTPStatus.BAD_REQUEST, description=result)
+        create_point(result)
         return redirect(url_for('web.home'))
     return render_template("add.html")
 
 
 @web_bp.route('/delete/<int:point_id>', methods=['POST'])
 def delete(point_id):
-    with session() as s:
-        point = s.query(Data).filter(Data.id == point_id).first()
-        if not point:
-            abort(HTTPStatus.NOT_FOUND, description="Record not found")
-        s.delete(point)
-        s.commit()
+    is_valid, cause = validate_point_id(point_id)
+    if not is_valid:
+        abort(HTTPStatus.BAD_REQUEST, description=cause)
+    is_found = delete_point(point_id)
+    if not is_found:
+        abort(HTTPStatus.NOT_FOUND, description="Record not found")
     return redirect(url_for('web.home'))
 
 
 @web_bp.route('/predict', methods=['GET', 'POST'])
 def predict():
-    with session() as s:
-        data_points = s.query(Data).all()
-    if len(data_points) < 5:
+    data_count = count_points()
+    if data_count < 5:
         abort(HTTPStatus.BAD_REQUEST,
               description="Unable to make prediction; "
                           "Please add more data points to database!"
@@ -66,8 +63,8 @@ def predict():
         }
         valid, result = validate_point(input_data, is_prediction=True)
         if not valid:
-            abort(HTTPStatus.NOT_FOUND, description=result)
-
+            abort(HTTPStatus.BAD_REQUEST, description=result)
+        data_points = get_all()
         prediction = make_prediction(data_points, result)
         return render_template("prediction_result.html",
                                prediction=prediction)
@@ -76,11 +73,10 @@ def predict():
 
 @web_bp.route('/init', methods=['GET', 'POST'])
 def init():
-    with session() as s:
-        if s.query(Data).count() > 0:
-            abort(HTTPStatus.CONFLICT, "Data points are already "
-                                       "present in database!")
-        data_points = generate_points()
-        s.add_all(data_points)
-        s.commit()
+    data_count = count_points()
+    if data_count > 0:
+        abort(HTTPStatus.CONFLICT, "Data points are already "
+                                   "present in database!")
+    data_points = generate_points()
+    initialize_data(data_points)
     return redirect(url_for('web.home'))

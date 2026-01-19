@@ -8,7 +8,7 @@ BASE_URL = os.environ.get('BASE_URL')
 
 
 def print_result(response):
-    print(f'Status code: {response.status_code}')
+    print(f'Status code: {response.status_code} - {response.reason}\n')
     try:
         print(f'Response JSON:\n{response.json()}')
     except requests.exceptions.JSONDecodeError:

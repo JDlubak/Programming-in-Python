@@ -52,7 +52,7 @@
 </table>
 {% else %}
 <p>Database is currently empty!</p>
-<form action={{url_for('web.init') method="POST" }}>
+<form action="{{url_for('web.init') }} " method="POST">
     <button type="submit">Initialize random data points</button>
 </form>
 {% endif %}

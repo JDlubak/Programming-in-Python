@@ -67,3 +67,13 @@ def get_field_value_error(value: Any,
     if value <= 0:
         return f'{field_name} must be greater than 0'
     return ""
+
+
+def validate_point_id(point_id: Any) -> Tuple[bool, str]:
+    try:
+        point_id = int(point_id)
+        if point_id <= 0:
+            raise ValueError
+    except (ValueError, TypeError):
+        return False, "Invalid id, must be a positive integer"
+    return True, ""
