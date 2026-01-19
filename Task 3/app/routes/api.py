@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, current_app, jsonify, request
 
 from app.services import count_points, create_point, delete_point, \
     get_all, initialize_data
@@ -70,7 +70,8 @@ def get_prediction():
     if not is_valid:
         return {"error": result}, HTTPStatus.BAD_REQUEST
     data_points = get_all()
-    prediction = make_prediction(data_points, result)
+    model = current_app.config['model']
+    prediction = make_prediction(model, data_points, result)
     return jsonify({"predicted_category": prediction}), HTTPStatus.OK
 
 

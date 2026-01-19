@@ -1,6 +1,6 @@
 from http import HTTPStatus
 
-from flask import (abort, Blueprint, redirect,
+from flask import (abort, Blueprint, current_app, redirect,
                    render_template, request, url_for)
 
 from app.services import (count_points, create_point, delete_point,
@@ -65,7 +65,8 @@ def predict():
         if not valid:
             abort(HTTPStatus.BAD_REQUEST, description=result)
         data_points = get_all()
-        prediction = make_prediction(data_points, result)
+        model = current_app.config['model']
+        prediction = make_prediction(model, data_points, result)
         return render_template("prediction_result.html",
                                prediction=prediction)
     return render_template("predict.html")

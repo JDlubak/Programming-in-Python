@@ -1,23 +1,18 @@
-from sklearn.neighbors import KNeighborsClassifier
+from typing import List
+
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import StandardScaler
+
+from app.models import Data
 
 
-def make_prediction(db_data, form_data):
-    db_values = []
-    db_category = []
-    for d in db_data:
-        db_values.append([d.width, d.height, d.length, d.weight])
-        db_category.append(d.category)
+def make_prediction(model: Pipeline, db_data: List[Data],
+                    form_data: Data) -> int:
+    x_train = [[d.width, d.height, d.length, d.weight] for d in db_data]
+    y_train = [d.category for d in db_data]
 
-    model = Pipeline([
-        ("scaler", StandardScaler()),
-        ("knn", KNeighborsClassifier(n_neighbors=4, weights="distance"))
-    ])
+    model.fit(x_train, y_train)
 
-    model.fit(db_values, db_category)
-
-    input_data = [[form_data.width, form_data.height,
-                   form_data.length, form_data.weight]]
-    model_output = model.predict(input_data)
-    return int(model_output[0])
+    x_input = [[form_data.width, form_data.height,
+                form_data.length, form_data.weight]]
+    prediction = model.predict(x_input)
+    return int(prediction[0])

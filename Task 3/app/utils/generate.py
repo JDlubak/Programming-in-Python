@@ -1,9 +1,21 @@
 import random
 
+from sklearn.pipeline import Pipeline
+
 from app.models import Data
 
 
-def generate_points(amount=30, categories_amount=4):
+def generate_prediction_model() -> Pipeline:
+    from sklearn.neighbors import KNeighborsClassifier
+    from sklearn.preprocessing import StandardScaler
+    model = Pipeline([
+        ("scaler", StandardScaler()),
+        ("knn", KNeighborsClassifier(n_neighbors=4, weights="distance"))
+    ])
+    return model
+
+
+def generate_points(amount: int = 30, categories_amount: int = 4):
     categories = range(1, categories_amount + 1)
     points = []
     for _ in range(amount):
