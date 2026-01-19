@@ -59,12 +59,7 @@ def get_prediction():
                           "Please add more data points to database! "
                           "(At least 5 points required)"},
                 HTTPStatus.BAD_REQUEST)
-    input_data = {
-        'width': request.args.get('width'),
-        'height': request.args.get('height'),
-        'length': request.args.get('length'),
-        'weight': request.args.get('weight')
-    }
+    input_data = request.args.to_dict()
     is_valid, result = validate_point(input_data, is_prediction=True,
                                       for_api=True)
     if not is_valid:
